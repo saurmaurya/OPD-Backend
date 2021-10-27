@@ -1,0 +1,32 @@
+spring:
+  application:
+    name: api-gateway
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lower-case-service-id: true
+      routes[0]:
+        id: doctor-service
+        uri: lb://doctor-service
+        predicates[0]: Path=/api/doctor/**
+      routes[1]:
+        id: admin-service
+        uri: lb://admin-service
+        predicates[0]: Path=/api/admin/**
+      routes[2]:
+        id: appointment-service
+        uri: lb://appointment-service
+        predicates[0]: Path=/api/appointment/**
+      routes[3]:
+        id: auth-server
+        uri: lb://auth-server
+        predicates[0]: Path=/api/auth/**
+    loadbalancer:
+      ribbon:
+        enabled: false
+
+eureka:
+  instance:
+    instance-id= ${spring.application.name}-${random.uuid}:

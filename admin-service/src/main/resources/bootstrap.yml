@@ -1,0 +1,40 @@
+spring:
+  application:
+    name: admin-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/opd
+  cloud:
+    config:
+      uri: http://localhost:8888
+    vault:
+      host: localhost
+      port: 8200
+      scheme: http
+      authentication: TOKEN
+      token: s.hQ9grfna2VCY2TjZM7zVzWdZ
+      application-name: admin-service
+  rabbitmq:
+    host: localhost
+    port: 5672
+    username: guest
+    password: guest
+
+admin-service:
+  app:
+    jwtSecret: mycustomsecretkey
+    jwtExpirationMs: 86400000
+    adminRegSecret: somethingsmart
+
+server:
+  port: 0
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

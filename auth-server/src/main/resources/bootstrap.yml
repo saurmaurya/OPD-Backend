@@ -1,0 +1,24 @@
+spring:
+  application:
+    name: auth-server
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/opd
+  security:
+    enable-csrf: false
+
+auth-server:
+  app:
+    jwtSecret: mycustomsecretkey
+    jwtExpirationMs: 86400000
+    adminRegSecret: somethingsmart
+
+server:
+  port: 0
+
+#auth-server.app.jwtSecret: somerandomsecrets
+#auth-server.app.jwtExpirationMs: 86400000
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}

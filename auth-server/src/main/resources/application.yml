@@ -1,0 +1,15 @@
+#spring:
+#  application:
+#    name: auth-server
+#  data:
+#    mongodb:
+#      uri: mongodb://localhost:27017/opd
+#
+#auth-server:
+#  app:
+#    jwtSecret: mycustomsecretkey
+#    jwtExpirationMs: 86400000
+#    adminRegSecret: somethingsmart
+#
+#server:
+#  port: 0
