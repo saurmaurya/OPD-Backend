@@ -19,6 +19,7 @@ class JwtUtils(
 
     fun generateJwtToken(authentication: Authentication): String {
         val userPrincipal = authentication.principal as UserDetailsImpl
+        println(userPrincipal)
         return Jwts.builder()
             .setSubject(userPrincipal.username)
             .setIssuedAt(Date())

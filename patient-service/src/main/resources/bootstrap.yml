@@ -1,0 +1,45 @@
+
+spring:
+  application:
+    name: patient-service
+  data:
+    mongodb:
+      uri: mongodb://localhost:27017/opd
+#  cloud:
+#    config:
+#      uri: http://localhost:8888
+#    vault:
+#      host: localhost
+#      port: 8200
+#      scheme: http
+#      authentication: TOKEN
+#      token: s.hQ9grfna2VCY2TjZM7zVzWdZ
+#      application-name: patient-service
+#  rabbitmq:
+#    host: localhost
+#    port: 5672
+#    username: guest
+#    password: guest
+  mvc:
+    format:
+      date: yyyy-MM-dd
+      time: HH:mm:ss
+      date-time: yyyy-MM-dd HH:mm:ss
+
+patient-service:
+  app:
+    jwtSecret: mycustomsecretkey
+    jwtExpirationMs: 86400000
+
+server:
+  port: 8084
+
+eureka:
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: "*"

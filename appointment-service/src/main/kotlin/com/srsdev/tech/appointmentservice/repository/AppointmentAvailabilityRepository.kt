@@ -6,7 +6,7 @@ import org.springframework.data.mongodb.repository.MongoRepository
 import java.time.LocalDateTime
 
 interface AppointmentAvailabilityRepository: MongoRepository<AppointmentAvailability, String>{
-    fun findAppointmentAvailabilitiesByClinicAndDate(clinic: ClinicForAppointmentAvailability, date: LocalDateTime): Collection<AppointmentAvailability>
-    fun findAppointmentAvailabilitiesByClinic(clinic: ClinicForAppointmentAvailability): Collection<AppointmentAvailability>
-    fun existsAppointmentAvailabilityByClinicAndDate(clinic: ClinicForAppointmentAvailability, date: LocalDateTime): Boolean
+    fun existsAppointmentAvailabilityByClinic_IdAndDate(clinicId: String, date: LocalDateTime): Boolean
+    fun findAppointmentAvailabilitiesByClinic_IdAndDateAfter(clinicId: String, date: LocalDateTime): List<AppointmentAvailability>
+    fun findAppointmentAvailabilitiesByClinic_IdAndDate(clinicId: String, date: LocalDateTime): AppointmentAvailability
 }

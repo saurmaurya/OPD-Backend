@@ -7,26 +7,53 @@ spring:
         locator:
           enabled: true
           lower-case-service-id: true
-      routes[0]:
-        id: doctor-service
-        uri: lb://doctor-service
-        predicates[0]: Path=/api/doctor/**
-      routes[1]:
-        id: admin-service
-        uri: lb://admin-service
-        predicates[0]: Path=/api/admin/**
-      routes[2]:
-        id: appointment-service
-        uri: lb://appointment-service
-        predicates[0]: Path=/api/appointment/**
-      routes[3]:
-        id: auth-server
-        uri: lb://auth-server
-        predicates[0]: Path=/api/auth/**
-    loadbalancer:
-      ribbon:
-        enabled: false
+          lower-case-service-uri: true
+server:
+  port: 9080
+
+#      default-filters[0]: AddResponseHeader=Access-Control-Allow-Origin, "http://localhost:3000"
+#      globalcors:
+#        corsConfigurations:
+#            '[/**]':
+#              allowedOrigins: "*"
+#
+#        add-to-simple-url-handler-mapping: true
+#      #      discovery:
+##        locator:
+##          enabled: true
+##          lower-case-service-id: true
+#      routes[0]:
+#        id: doctor-service
+#        uri: lb://doctor-service
+#        predicates[0]: Path=/api/doctor/**
+#      routes[1]:
+#        id: admin-service
+#        uri: lb://admin-service
+##        filters[0]: AddRequestHeader=Access-Control-Allow-Origin, "http://localhost:3000"
+##        filters[1]: AddResponseHeader=Access-Control-Allow-Origin, "http://localhost:3000"
+##        filters[2]: DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+#        predicates[0]: Path=/api/admin/**
+#      routes[2]:
+#        id: appointment-service
+#        uri: lb://appointment-service
+#        predicates[0]: Path=/api/appointment/**
+#      routes[3]:
+#        id: auth-server
+#        uri: lb://auth-server
+#        predicates[0]: Path=/api/auth/**
+#      routes[4]:
+#        id: patient-service
+#        uri: lb://patient-service
+#        predicates[0]: Path=/api/patient/**
+#    loadbalancer:
+#      ribbon:
+#        enabled: false
 
 eureka:
+  client:
+    service-url:
+      defaultZone: ${DEFAULT_ZONE:http://localhost:8761/eureka/}
   instance:
+#    lease-renewal-interval-in-seconds: 28
+#    lease-expiration-duration-in-seconds: 1
     instance-id= ${spring.application.name}-${random.uuid}:

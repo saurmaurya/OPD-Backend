@@ -1,15 +1,30 @@
-#spring:
-#  application:
-#    name: auth-server
-#  data:
-#    mongodb:
+spring:
+  application:
+    name: auth-server
+  data:
+    mongodb:
+      uri: mongodb+srv://admin:admin@opd.caadc.mongodb.net/OPD?retryWrites=true&w=majority
 #      uri: mongodb://localhost:27017/opd
-#
-#auth-server:
-#  app:
-#    jwtSecret: mycustomsecretkey
-#    jwtExpirationMs: 86400000
-#    adminRegSecret: somethingsmart
-#
-#server:
-#  port: 0
+  security:
+    enable-csrf: false
+
+auth-server:
+  app:
+    jwtSecret: mycustomsecretkey
+    jwtExpirationMs: 86400000
+
+server:
+  port: 8082
+
+eureka:
+  client:
+    service-url:
+      defaultZone: ${DEFAULT_ZONE:http://localhost:8761/eureka/}
+#    healthcheck:
+#      enabled: true
+  instance:
+    instance-id: ${spring.application.name}:${random.uuid}
+    prefer-ip-address: true
+    ip-address: ${EUREKA_IP:localhost}
+    #    lease-renewal-interval-in-seconds: 28
+    #    lease-expiration-duration-in-seconds: 1

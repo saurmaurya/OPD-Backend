@@ -14,7 +14,7 @@ interface DoctorService {
 
     fun addClinic(clinic: Clinic): Clinic
     fun getClinicById(id: String): Clinic
-    fun getAllClinicsByDoctor(doctor: Doctor): List<Clinic>
+    fun getAllClinicsByDoctor(doctorId: String): List<Clinic>
     fun getAllClinics(): List<Clinic>
     fun getAllInactiveClinics(): List<Clinic>
     fun getAllActiveClinics(): List<Clinic>

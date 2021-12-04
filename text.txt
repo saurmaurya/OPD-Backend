@@ -1,0 +1,5 @@
+for eurek
+
+security grps-> inbound rule-> all trafic
+microservice-> inbound-> portname:
+api gateway-> custom tcp 8080

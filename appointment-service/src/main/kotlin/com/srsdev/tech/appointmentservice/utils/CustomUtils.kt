@@ -1,7 +1,7 @@
 package com.srsdev.tech.appointmentservice.utils
 
 import com.srsdev.tech.appointmentservice.exception.InvalidRequestException
-import com.srsdev.tech.appointmentservice.model.enum.Status
+import com.srsdev.tech.appointmentservice.model.enums.Status
 import java.time.Duration
 import java.time.LocalDateTime
 
@@ -19,18 +19,6 @@ class CustomUtils {
                 )
             }
         }
-//
-//        fun genderMapper(gender: String): Gender {
-//            return when (gender) {
-//                "male" -> Gender.MALE
-//                "female" -> Gender.FEMALE
-//                "transgender" -> Gender.TRANSGENDER
-//                else -> {
-//                    throw InvalidRequestException("Error: Invalid gender property $gender" +
-//                            "Choose between male, female and transgender")
-//                }
-//            }
-//        }
 
         fun slotCreator(
             startTime: LocalDateTime,

@@ -4,25 +4,22 @@ import com.srsdev.tech.doctorservice.client.AdminClient
 import com.srsdev.tech.doctorservice.client.AppointmentClient
 import com.srsdev.tech.doctorservice.client.AuthClient
 import com.srsdev.tech.doctorservice.exception.InvalidRequestException
-import com.srsdev.tech.doctorservice.model.Clinic
-import com.srsdev.tech.doctorservice.model.Doctor
-import com.srsdev.tech.doctorservice.model.DoctorSpeciality
-import com.srsdev.tech.doctorservice.model.User
+import com.srsdev.tech.doctorservice.model.*
 import com.srsdev.tech.doctorservice.model.dto.*
 import com.srsdev.tech.doctorservice.payload.request.LoginRequest
 import com.srsdev.tech.doctorservice.payload.response.JwtResponse
 import com.srsdev.tech.doctorservice.response.SuccessResponse
 import com.srsdev.tech.doctorservice.service.DoctorService
 import com.srsdev.tech.doctorservice.utils.CustomUtils
-import io.swagger.v3.oas.annotations.Operation
-import org.modelmapper.ModelMapper
+import org.springframework.format.annotation.DateTimeFormat
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.security.access.prepost.PreAuthorize
 import org.springframework.web.bind.annotation.*
+import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/doctor")
 class DoctorRestController(
@@ -30,9 +27,8 @@ class DoctorRestController(
     private val authClient: AuthClient,
     private val appointmentClient: AppointmentClient,
     private val doctorService: DoctorService,
-    private val modelMapper: ModelMapper
 ) {
-//    @PreAuthorize("hasRole('ADMIN')")
+    //    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/welcome")
     @ResponseStatus(HttpStatus.OK)
     fun welcome(): String {
@@ -41,26 +37,27 @@ class DoctorRestController(
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    fun getDoctor(): Doctor{
-        val user = getAuthUser()
+    fun getDoctor(): Doctor {
+        val user = getUser()
         return doctorService.getDoctorByUser(user)
     }
 
+    @GetMapping("/doctorUser/{docId}")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("/user")
-    fun getAuthUser(): User {
-        return authClient.getUser()
+    fun getDoctorUserId(@PathVariable docId: String): String {
+        val doctor = doctorService.getDoctor(docId)
+        return doctor.user.id
     }
 
     @PostMapping("/login")
     @ResponseStatus(HttpStatus.OK)
-    fun login(@RequestBody loginRequest: LoginRequest): JwtResponse{
+    fun login(@RequestBody loginRequest: LoginRequest): JwtResponse {
         return authClient.login(loginRequest)
     }
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    fun createDoctor(@RequestBody body: DoctorDto): ResponseEntity<SuccessResponse> {
+    fun addDoctor(@RequestBody body: DoctorDto): ResponseEntity<SuccessResponse> {
         val speciality = adminClient.getDoctorSpeciality(body.specialityId)
         val userData = UserRegistrationDto(body.username, body.email, body.password, setOf("doctor"))
         val user = authClient.register(userData)
@@ -77,6 +74,11 @@ class DoctorRestController(
         )
         doctorService.addDoctor(doctor)
         return ResponseEntity.ok(SuccessResponse("success"))
+    }
+
+    @GetMapping("/user")
+    fun getUser(): User{
+        return authClient.getUser()
     }
 
     @GetMapping("/doctor-speciality")
@@ -104,7 +106,7 @@ class DoctorRestController(
         return doctorService.addClinic(clinic)
     }
 
-    @GetMapping("clinic/{clinicId}")
+    @GetMapping("/clinic/{clinicId}")
     @ResponseStatus(HttpStatus.OK)
     fun getClinicById(@PathVariable clinicId: String): Clinic {
         val doctor = getDoctor()
@@ -115,88 +117,82 @@ class DoctorRestController(
     }
 
     @GetMapping("/clinic/self")
-    fun getSelfClinics(): List<Clinic>{
-        return doctorService.getAllClinicsByDoctor(getDoctor())
+    fun getSelfClinics(): List<Clinic> {
+        return doctorService.getAllClinicsByDoctor(getDoctor().id)
     }
 
-    @GetMapping("/clinic")
-    fun getAllClinics():List<Clinic>{
+    @GetMapping("/clinics")
+    fun getAllClinics(): List<Clinic> {
         return doctorService.getAllClinics()
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
-    @GetMapping("/clinic/inactive")
-    fun getAllInactiveClinics():List<Clinic>{
+//    @PreAuthorize("hasRole('ADMIN')")
+    @GetMapping("/clinics/inactive")
+    fun getAllInactiveClinics(): List<Clinic> {
         return doctorService.getAllInactiveClinics()
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('PATIENT')")
-    @GetMapping("/clinic/active")
-    fun getAllActiveClinics():List<Clinic>{
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('PATIENT')")
+    @GetMapping("/clinics/active")
+    fun getAllActiveClinics(): List<Clinic> {
         return doctorService.getAllActiveClinics()
     }
 
     @PutMapping("/clinic/activate/{id}")
-    fun activateClinic (@PathVariable id: String): Clinic{
+    fun activateClinic(@PathVariable id: String): Clinic {
         return doctorService.activateClinic(id)
+    }
+
+    @ResponseStatus(HttpStatus.OK)
+    @GetMapping("/all")
+    fun getAllDoctors(): List<Doctor> {
+        return doctorService.getAllDoctors()
     }
 
     @PostMapping("/availability")
     fun addAvailability(@RequestBody aptAvlDto: AppointmentAvailabilityDto): ResponseEntity<Any> {
         val clinic = getClinicById(aptAvlDto.clinic.id)
-        if(clinic.isActive==false)
+        if (clinic.isActive == false)
             throw InvalidRequestException("Error: Clinic is not active")
-        if(clinic.doctor.id != getDoctor().id)
+        if (clinic.doctor.id != getDoctor().id)
             throw InvalidRequestException("Error: Please enter clinic id associated with you.")
+        println(aptAvlDto.startTime)
+        println(aptAvlDto.endTime)
         return appointmentClient.addAvailability(aptAvlDto)
     }
 
-    @Operation(
-        summary = "Get list of all doctors",
-        description = "Get list of all doctors registered in the system."
-    )
-    @PreAuthorize("hasRole('ADMIN')")
-    @ResponseStatus(HttpStatus.OK)
-    @GetMapping("doctors")
-    fun getAllDoctors(): List<Doctor> {
-        return doctorService.getAllDoctors()
+    @GetMapping("/availability/{clinicId}")
+    fun getAvailability(
+        @PathVariable clinicId: String,
+        @RequestParam(required = false) date: LocalDate?
+    ): List<AppointmentAvailability> {
+        val clinic = doctorService.getClinicById(clinicId)
+        if (clinic.doctor.id != getDoctor().id) throw InvalidRequestException("Error: This clinic is not associated with you.")
+        return appointmentClient.getAvailability(clinicId, date.toString())
     }
 
-    @PreAuthorize("hasRole('ADMIN')")
+
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("doctors/inactive")
+    @GetMapping("/inactive")
     fun getAllInactiveDoctors(): List<Doctor> {
         return doctorService.getAllInactiveDoctors()
     }
 
-    @PreAuthorize("hasRole('ADMIN') or hasRole('PATIENT')")
+//    @PreAuthorize("hasRole('ADMIN') or hasRole('PATIENT')")
     @ResponseStatus(HttpStatus.OK)
-    @GetMapping("doctors/active")
+    @GetMapping("/active")
     fun getAllActiveDoctors(): Collection<Doctor> {
         return doctorService.getAllActiveDoctors()
     }
 
-
-    // test
-    @GetMapping("/all")
-    fun allAccess(): String {
-        return "Public Content."
-    }
-
-//    @GetMapping("/user")
-//    @PreAuthorize("hasRole('USER') or hasRole('DOCTOR') or hasRole('ADMIN')")
-//    fun userAccess(): String {
-//        return "User Content."
-//    }
-
     @GetMapping("/doc")
-    @PreAuthorize("hasRole('DOCTOR')")
+//    @PreAuthorize("hasRole('DOCTOR')")
     fun doctorAccess(): String {
         return "Doctor Board."
     }
 
     @GetMapping("/admin")
-    @PreAuthorize("hasRole('ADMIN')")
+//    @PreAuthorize("hasRole('ADMIN')")
     fun adminAccess(): String {
         return "Admin Board."
     }

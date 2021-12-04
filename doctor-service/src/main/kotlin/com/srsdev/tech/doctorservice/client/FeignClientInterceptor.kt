@@ -2,11 +2,11 @@ package com.srsdev.tech.doctorservice.client
 
 import feign.RequestInterceptor
 import feign.RequestTemplate
-import org.springframework.stereotype.Component
+import org.springframework.context.annotation.Configuration
 import org.springframework.web.context.request.RequestContextHolder
 import org.springframework.web.context.request.ServletRequestAttributes
 
-@Component
+@Configuration
 class FeignClientInterceptor : RequestInterceptor {
 
     override fun apply(reqTemplate: RequestTemplate?) {

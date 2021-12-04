@@ -111,10 +111,12 @@ class UserServiceImpl constructor(
         )
     }
 
-    override fun addRole(roles: List<Role>) {
+    override fun addRole(roles: List<Role>): Boolean {
         roles.forEach { role ->
-            roleRepository.save(role)
+            if(!roleRepository.existsByName(role.name))
+                roleRepository.save(role)
         }
+        return true
     }
 
 }

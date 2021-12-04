@@ -1,12 +1,13 @@
 package com.srsdev.tech.doctorservice.model.dto
 
-import java.time.LocalDate
+import java.time.LocalDateTime
+import java.time.LocalTime
 
 
 data class AppointmentAvailabilityDto(
-    var date: LocalDate,
-    var startTime: String,
-    var endTime: String,
+    var date: LocalDateTime,
+    var startTime: LocalDateTime,
+    var endTime: LocalDateTime,
     var clinic: ClinicForAppointmentAvailability,
     var avgVisitTime: Int // in minutes
 )

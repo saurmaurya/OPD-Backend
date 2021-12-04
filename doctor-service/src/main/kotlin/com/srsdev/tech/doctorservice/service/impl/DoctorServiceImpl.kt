@@ -50,11 +50,11 @@ class DoctorServiceImpl(
     }
 
     override fun getClinicById(id: String): Clinic {
-        return clinicRepository?.findById(id)!!.get()
+        return clinicRepository?.findById(id)?.get() ?: throw ResourceNotFoundException("Clinic not found")
     }
 
-    override fun getAllClinicsByDoctor(doctor: Doctor): List<Clinic> {
-        return clinicRepository!!.findClinicsByDoctor(doctor)
+    override fun getAllClinicsByDoctor(doctorId: String): List<Clinic> {
+        return clinicRepository!!.findClinicsByDoctor_Id(doctorId)
     }
 
     override fun getAllClinics(): List<Clinic> {

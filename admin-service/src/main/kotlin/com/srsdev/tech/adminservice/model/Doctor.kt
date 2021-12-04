@@ -22,6 +22,4 @@ data class Doctor(
     var identity: Map<String, String>,
     @Indexed(unique = true, direction = IndexDirection.DESCENDING, dropDups = true)
     var mobile: String,
-    @DBRef
-    var user: User,
 )

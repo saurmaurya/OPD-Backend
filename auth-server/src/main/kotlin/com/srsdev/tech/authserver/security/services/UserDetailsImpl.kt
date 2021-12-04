@@ -73,7 +73,7 @@ class UserDetailsImpl(
                 }
                 .collect(Collectors.toList())
             return UserDetailsImpl(
-                user.id!!,
+                user.id,
                 user.username,
                 user.email,
                 user.password,

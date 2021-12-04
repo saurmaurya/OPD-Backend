@@ -1,6 +1,7 @@
 package com.srsdev.tech.doctorservice.model
 
 import com.fasterxml.jackson.annotation.JsonIgnore
+import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.mapping.DBRef
 import org.springframework.data.mongodb.core.mapping.Document
@@ -8,7 +9,7 @@ import org.springframework.data.mongodb.core.mapping.Document
 @Document(collection = "user")
 class User {
     @Id
-    var id: String? = null
+    var id: String = ObjectId.get().toString()
     var username: String = ""
     var email: String = ""
 

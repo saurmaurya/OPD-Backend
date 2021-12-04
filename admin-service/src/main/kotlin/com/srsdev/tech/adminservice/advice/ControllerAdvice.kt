@@ -2,7 +2,9 @@ package com.srsdev.tech.adminservice.advice
 
 import com.srsdev.tech.adminservice.exception.DatabaseRepositoryException
 import com.srsdev.tech.adminservice.exception.DuplicateDataException
+import com.srsdev.tech.adminservice.exception.InvalidRequestException
 import com.srsdev.tech.adminservice.exception.ResourceNotFoundException
+import feign.FeignException
 import org.springframework.http.HttpStatus
 import org.springframework.validation.FieldError
 import org.springframework.web.bind.MethodArgumentNotValidException
@@ -15,6 +17,18 @@ class ControllerAdvice {
     @ResponseStatus(HttpStatus.NOT_FOUND)
     @ExceptionHandler
     fun handleResourceNotFoundException(exception: ResourceNotFoundException): String {
+        return exception.message.toString()
+    }
+
+    @ExceptionHandler(FeignException::class)
+    fun handleFeignClientStatusException(e: FeignException): String{
+        if(e.status()==-1) return "Please try again!!!"
+        return e.contentUTF8().toString()
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    fun handleInvalidRequestException(exception: InvalidRequestException):String{
         return exception.message.toString()
     }
 

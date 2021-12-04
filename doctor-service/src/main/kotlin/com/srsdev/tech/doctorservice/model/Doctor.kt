@@ -1,5 +1,6 @@
 package com.srsdev.tech.doctorservice.model
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.srsdev.tech.doctorservice.model.enums.Gender
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
@@ -23,5 +24,6 @@ data class Doctor(
     @Indexed(unique = true, direction = IndexDirection.DESCENDING, dropDups = true)
     var mobile: String,
     @DBRef
+    @JsonIgnore
     var user: User,
 )

@@ -13,5 +13,5 @@ interface UserService {
     fun getUserEmail(email: String): User
     fun activateUser(id: String): User
     fun loginUser(loginDto: LoginDto): JwtResponse
-    fun addRole(roles: List<Role>)
+    fun addRole(roles: List<Role>): Boolean
 }

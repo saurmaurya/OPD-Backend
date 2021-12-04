@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.*
 import java.util.stream.Collectors
 
 
+@CrossOrigin
 @RestController
 @RequestMapping("/api/auth")
 class AuthController(
@@ -54,7 +55,6 @@ class AuthController(
             userDetails.email,
             roles
         )
-
     }
 
     @PostMapping("/register")
@@ -64,12 +64,13 @@ class AuthController(
     }
 
     @PostMapping("/role")
-    fun addRoles() {
-        var role = mutableListOf<Role>()
+    fun addRoles(): Boolean {
+        val role = mutableListOf<Role>()
         role.add(Role(name = ERole.ROLE_ADMIN))
         role.add(Role(name = ERole.ROLE_PATIENT))
         role.add(Role(name = ERole.ROLE_DOCTOR))
         userService.addRole(role)
+        return true
     }
 
     @GetMapping("/user")
